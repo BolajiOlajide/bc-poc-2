@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
+
+	"github.com/google/go-github/v52/github"
 )
 
 var githubToken string
@@ -20,5 +21,11 @@ func main() {
 		log.Fatal("github token is required")
 	}
 
-	fmt.Println("token is ", githubToken)
+	// create a new private repository named "foo"
+	repo := &github.Repository{
+		Name:    github.String(repo),
+		Private: github.Bool(false),
+	}
+	repo.
+		fmt.Println("token is ", githubToken)
 }
