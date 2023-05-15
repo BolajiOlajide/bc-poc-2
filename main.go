@@ -34,7 +34,7 @@ func main() {
 	content := []byte("# Hola\n* This is a file committed via Github's API\n")
 	message := "hopefully signed commit"
 
-	branchRef, err := createBranch(ctx, client, *branch)
+	_, err := createBranch(ctx, client, *branch, *repo, *owner)
 	if err != nil {
 		log.Fatalf("error creating branch %s", err.Error())
 	}
@@ -49,21 +49,21 @@ func main() {
 	}
 }
 
-func createBranch(ctx context.Context, client *github.Client, branch string) (*github.Reference, error) {
+func createBranch(ctx context.Context, client *github.Client, branch, repo, owner string) (*github.Reference, error) {
 	// Fetching the latest commit on the master branch
-	ref, _, err := client.Git.GetRef(ctx, "<owner>", "<repo>", "refs/heads/master")
+	ref, _, err := client.Git.GetRef(ctx, owner, repo, "refs/heads/main")
 	if err != nil {
 		return nil, err
 	}
 
 	// Creating a new branch
-	newRef, _, err := client.Git.CreateRef(ctx, "<owner>", "<repo>", &github.Reference{
+	newRef, _, err := client.Git.CreateRef(ctx, owner, repo, &github.Reference{
 		Ref:    github.String(fmt.Sprintf("refs/heads/%s", branch)),
 		Object: &github.GitObject{SHA: ref.Object.SHA},
 	})
 	if err != nil {
-		return nil, err
 		fmt.Println(err)
+		return nil, err
 	}
 	return newRef, nil
 }
